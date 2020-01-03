@@ -1,4 +1,6 @@
 class Pet < ApplicationRecord
+  validates :name, uniqueness: true, length: { minimum: 3 }
+
   has_many :photos
   has_many :posts
   has_many :comments

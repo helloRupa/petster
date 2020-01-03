@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_23_235637) do
+ActiveRecord::Schema.define(version: 2020_01_03_224253) do
 
   create_table "comments", force: :cascade do |t|
     t.integer "post_id"
     t.integer "pet_id"
-    t.text "content"
+    t.text "content", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["post_id"], name: "index_comments_on_post_id"
@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 2019_12_23_235637) do
     t.string "session_token"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["name"], name: "index_pets_on_name"
+    t.index ["name"], name: "index_pets_on_name", unique: true
     t.index ["session_token"], name: "index_pets_on_session_token", unique: true
   end
 
