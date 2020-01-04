@@ -3,5 +3,10 @@ class Post < ApplicationRecord
 
   belongs_to :pet
   has_many :likes, as: :likeable
-  has_many :likers, through: :likes, source: :pet 
+  has_many :likers, through: :likes, source: :pet
+  has_many :comments
+
+  def like_count
+    likes.count
+  end
 end
