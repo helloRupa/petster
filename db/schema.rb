@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_03_224253) do
+ActiveRecord::Schema.define(version: 2020_01_10_023001) do
 
   create_table "comments", force: :cascade do |t|
     t.integer "post_id"
@@ -22,13 +22,13 @@ ActiveRecord::Schema.define(version: 2020_01_03_224253) do
   end
 
   create_table "friends", force: :cascade do |t|
-    t.integer "pet_id_left", null: false
-    t.integer "pet_id_right", null: false
+    t.integer "requestor_id", null: false
+    t.integer "requestee_id", null: false
     t.boolean "has_friended", default: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["pet_id_left", "pet_id_right"], name: "index_friends_on_pet_id_left_and_pet_id_right", unique: true
-    t.index ["pet_id_right"], name: "index_friends_on_pet_id_right"
+    t.index ["requestee_id"], name: "index_friends_on_requestee_id"
+    t.index ["requestor_id", "requestee_id"], name: "index_friends_on_requestor_id_and_requestee_id", unique: true
   end
 
   create_table "likes", force: :cascade do |t|
@@ -43,7 +43,6 @@ ActiveRecord::Schema.define(version: 2020_01_03_224253) do
 
   create_table "pets", force: :cascade do |t|
     t.string "name", null: false
-    t.string "profile_photo"
     t.string "tagline"
     t.string "password_digest", null: false
     t.string "session_token"
@@ -58,6 +57,7 @@ ActiveRecord::Schema.define(version: 2020_01_03_224253) do
     t.string "photo_url", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "profile_photo", default: false
     t.index ["pet_id"], name: "index_photos_on_pet_id"
   end
 

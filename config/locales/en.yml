@@ -34,5 +34,5 @@ en:
   activerecord:
     attributes:
       friend:
-        pet_id_left: "Pets"
-        pet_id_right: "Pets"
+        requestor_id: "Pets"
+        requestee_id: "Pets"

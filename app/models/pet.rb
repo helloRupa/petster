@@ -2,27 +2,30 @@ class Pet < ApplicationRecord
   validates :name, uniqueness: true, length: { minimum: 3 }
 
   has_many :photos
+  has_one :profile_photo, -> { where profile_photo: true }, class_name: 'Photo'
   has_many :posts
   has_many :comments
   has_many :commented_posts, through: :comments, source: :post
   has_many :likes
   has_many :liked_posts, through: :likes, source: :likeable, source_type: 'Post'
   has_many :liked_comments, through: :likes, source: :likeable, source_type: 'Comment'
-  has_many :left_friends, ->(pet) { where(has_friended: true) }, foreign_key: :pet_id_left, class_name: 'Friend'
-  has_many :right_friends, ->(pet) { where(has_friended: true) }, foreign_key: :pet_id_right, class_name: 'Friend'
-  has_many :left_pending_friends, ->(pet) { where(has_friended: false) }, foreign_key: :pet_id_left, class_name: 'Friend'
-  has_many :right_pending_friends, ->(pet) { where(has_friended: false) }, foreign_key: :pet_id_right, class_name: 'Friend'
+  has_many :left_friends, ->(pet) { where(has_friended: true) }, foreign_key: :requestor_id, class_name: 'Friend'
+  has_many :right_friends, ->(pet) { where(has_friended: true) }, foreign_key: :requestee_id, class_name: 'Friend'
+  has_many :left_pending_friends, ->(pet) { where(has_friended: false) }, foreign_key: :requestor_id, class_name: 'Friend'
+  has_many :right_pending_friends, ->(pet) { where(has_friended: false) }, foreign_key: :requestee_id, class_name: 'Friend'
 
   def friends
-    Pet.where(id: left_friends.ids + right_friends.ids).where.not(id: self.id)
+    friend_ids = left_friends.pluck(:requestee_id) + right_friends.pluck(:requestor_id)
+    Pet.where(id: friend_ids)
   end
 
   def pending_friends
-    Pet.where(id: left_pending_friends.ids + right_pending_friends.ids).where.not(id: self.id)
+    friend_ids = left_pending_friends.pluck(:requestee_id) + right_pending_friends.pluck(:requestor_id)
+    Pet.where(id: friend_ids)
   end
 
   def number_friends
-    friend_ids.count
+    friends.count
   end
 
   def number_photos
@@ -78,7 +81,7 @@ class Pet < ApplicationRecord
   end
 
   def self.friend_count_hash
-    all_friends = Friend.pluck(:pet_id_left, :pet_id_right).flatten
+    all_friends = Friend.pluck(:requestor_id, :requestee_id).flatten
     all_friends.each_with_object(Hash.new(0)) { |f, h| h[f] += 1 }
   end
 

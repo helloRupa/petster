@@ -6,6 +6,16 @@
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
 
+# Clear all tables
+ActiveRecord::Base.establish_connection
+ActiveRecord::Base.connection.tables.each do |table|
+  next if table == 'schema_migrations'
+
+  ActiveRecord::Base.connection.execute("DELETE FROM #{table}")
+  ActiveRecord::Base.connection.execute("DELETE from sqlite_sequence where name = '#{table}'")
+end
+
+# Create pets and profile photos
 pet_names = ['Fluffanilla', 'Cumberbun', 'Xanadu', 'Fabio', 'Gremlin']
 photos = [
   'https://www.marylandzoo.org/wp-content/uploads/2018/04/lemuranimaheader3.jpg',
@@ -17,16 +27,21 @@ photos = [
 password_digest = '1234567891011121314151617181920'
 
 pet_names.each_with_index do |name, idx|
-  Pet.create(name: name, profile_photo: photos[idx], tagline: "Tagline #{name}", password_digest: password_digest)
+  Pet.create(name: name, tagline: "Tagline #{name}", password_digest: password_digest)
+  Photo.create(pet_id: idx + 1, photo_url: photos[idx], profile_photo: true)
 end
 
-Friend.create(pet_id_left: 1, pet_id_right: 2, has_friended: true)
-Friend.create(pet_id_left: 1, pet_id_right: 3, has_friended: true)
-Friend.create(pet_id_left: 1, pet_id_right: 4, has_friended: true)
-Friend.create(pet_id_left: 1, pet_id_right: 5, has_friended: true)
-Friend.create(pet_id_left: 2, pet_id_right: 4, has_friended: true)
-Friend.create(pet_id_left: 3, pet_id_right: 5, has_friended: true)
+# make friends
+Friend.create(requestor_id: 1, requestee_id: 2, has_friended: true)
+Friend.create(requestor_id: 1, requestee_id: 3, has_friended: true)
+Friend.create(requestor_id: 1, requestee_id: 4, has_friended: true)
+Friend.create(requestor_id: 1, requestee_id: 5, has_friended: true)
+Friend.create(requestor_id: 2, requestee_id: 4, has_friended: true)
+Friend.create(requestor_id: 3, requestee_id: 5, has_friended: true)
+Friend.create(requestor_id: 4, requestee_id: 3, has_friended: false)
+Friend.create(requestor_id: 5, requestee_id: 2, has_friended: false)
 
+# add more photos
 pet1_photos = [
   'https://images.pexels.com/photos/617278/pexels-photo-617278.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
   'https://www.nationalgeographic.com/content/dam/news/2018/05/17/you-can-train-your-cat/02-cat-training-NationalGeographic_1484324.jpg',
@@ -46,12 +61,15 @@ pet2_photos.each do |url|
   Photo.create(pet_id: 2, photo_url: url)
 end
 
+# Create posts and comments
 (1..5).each do |n|
   Post.create(pet_id: n, content: "This is post #{n}")
   Comment.create(post_id: n, pet_id: 1, content: "This is comment #{n} from pet 1")
   Comment.create(post_id: n, pet_id: 2, content: "This is comment #{n} from pet 2")
 end
 
+# Like posts and comments
 Like.create(pet_id: 1, likeable_type: Post, likeable_id: 2)
+Like.create(pet_id: 2, likeable_type: Post, likeable_id: 2)
 Like.create(pet_id: 1, likeable_type: Post, likeable_id: 3)
 Like.create(pet_id: 1, likeable_type: Comment, likeable_id: 1)

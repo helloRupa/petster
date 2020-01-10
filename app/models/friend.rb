@@ -1,12 +1,12 @@
 class Friend < ApplicationRecord
   validate :pets_are_not_friends
 
-  belongs_to :pet_left, class_name: 'Pet', primary_key: :id, foreign_key: :pet_id_left
-  belongs_to :pet_right, class_name: 'Pet', primary_key: :id, foreign_key: :pet_id_right
+  belongs_to :requestor, class_name: 'Pet', primary_key: :id, foreign_key: :requestor_id
+  belongs_to :requestee, class_name: 'Pet', primary_key: :id, foreign_key: :requestee_id
 
   def pets_are_not_friends
-    if all_friend_ids.include?(pet_id_right) || pet_id_left == pet_id_right
-      errors.add(:pet_id_left, 'are already friends or have requested friendship')
+    if all_friend_ids.include?(requestee_id) || requestor_id == requestee_id
+      errors.add(:requestor_id, 'are already friends or have requested friendship')
     end
   end
 
@@ -14,9 +14,9 @@ class Friend < ApplicationRecord
 
   def all_friend_ids
     Friend
-      .where(pet_id_left: pet_id_left)
-      .or(Friend.where(pet_id_right: pet_id_left))
-      .pluck(:pet_id_right, :pet_id_left)
+      .where(requestor_id: requestor_id)
+      .or(Friend.where(requestee_id: requestor_id))
+      .pluck(:requestee_id, :requestor_id)
       .flatten
   end
 end

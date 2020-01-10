@@ -2,9 +2,9 @@
 Social media for pets
 
 ## Models
-- Pets: name, profile_photo, tagline, password_digest, session_token
+- Pets: name, tagline, password_digest, session_token
 - Friends: pet_id, pet_id, can't be the same, uniquely scoped, has_friended
-- Photos: pet_id, photo_url
+- Photos: pet_id, photo_url, profile_photo
 - Posts: pet_id, content
 - Likes: post_id or comment_id (polymorphic), pet_id, uniquely scoped
 - Comments: post_id, pet_id, content
