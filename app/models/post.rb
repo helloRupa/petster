@@ -9,4 +9,12 @@ class Post < ApplicationRecord
   def like_count
     likes.count
   end
+
+  def comment_count
+    comments.count
+  end
+
+  def score
+    like_count + comment_count
+  end
 end

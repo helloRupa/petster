@@ -8,9 +8,17 @@ class Pet < ApplicationRecord
   has_many :likes
   has_many :liked_posts, through: :likes, source: :likeable, source_type: 'Post'
   has_many :liked_comments, through: :likes, source: :likeable, source_type: 'Comment'
+  has_many :left_friends, ->(pet) { where(has_friended: true) }, foreign_key: :pet_id_left, class_name: 'Friend'
+  has_many :right_friends, ->(pet) { where(has_friended: true) }, foreign_key: :pet_id_right, class_name: 'Friend'
+  has_many :left_pending_friends, ->(pet) { where(has_friended: false) }, foreign_key: :pet_id_left, class_name: 'Friend'
+  has_many :right_pending_friends, ->(pet) { where(has_friended: false) }, foreign_key: :pet_id_right, class_name: 'Friend'
 
   def friends
-    Pet.where(id: friend_ids)
+    Pet.where(id: left_friends.ids + right_friends.ids).where.not(id: self.id)
+  end
+
+  def pending_friends
+    Pet.where(id: left_pending_friends.ids + right_pending_friends.ids).where.not(id: self.id)
   end
 
   def number_friends
@@ -36,6 +44,12 @@ class Pet < ApplicationRecord
 
     find_most(all_posts, :comments)
   end
+
+  # def most_popular_post
+  #   return 'No posts' if posts.count.zero?
+
+    
+  # end
 
   def self.most_popular
     friend_count = friend_count_hash
@@ -68,14 +82,4 @@ class Pet < ApplicationRecord
     all_friends.each_with_object(Hash.new(0)) { |f, h| h[f] += 1 }
   end
 
-  def friend_ids
-    all_ids = Friend
-      .where(has_friended: true)
-      .where(pet_id_left: self.id)
-      .or(Friend.where(pet_id_right: self.id))
-      .pluck(:pet_id_right, :pet_id_left)
-      .flatten
-      .uniq
-    all_ids.select { |id| id != self.id }
-  end
 end

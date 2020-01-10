@@ -20,7 +20,7 @@ Social media for pets
 8. Pet#posts: return all pet's posts
 9. Pet#most_liked_post: return pet's most liked post
 10. Pet#most_commented_post: return pet's most commented on post
-11. Pet#most_popular_post: return pet's most popular post (comment number * like number)
+11. Pet#most_popular_post: return pet's most popular post (comment number + like number)
 12. Post#comments: return all comments for a post
 13. Post#number_comments: return number of comments on a post
 14. Post#likes: return number of likes on a post
