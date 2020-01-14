@@ -13,9 +13,9 @@ class Friend < ApplicationRecord
   private
 
   def all_friend_ids
-    Friend
+    self.class
       .where(requestor_id: requestor_id)
-      .or(Friend.where(requestee_id: requestor_id))
+      .or(self.class.where(requestee_id: requestor_id))
       .pluck(:requestee_id, :requestor_id)
       .flatten
   end

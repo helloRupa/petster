@@ -6,7 +6,7 @@ class Photo < ApplicationRecord
 
   def one_profile_photo
     return if profile_photo == false || 
-      Photo.where(pet_id: self.pet_id).where(profile_photo: true).count == 0
+      self.class.where(pet_id: self.pet_id).where(profile_photo: true).size == 0
     errors.add(:pet_id, 'already has a profile photo')
   end
 end

@@ -9,7 +9,7 @@ Social media for pets
 - Likes: post_id or comment_id (polymorphic), pet_id, uniquely scoped
 - Comments: post_id, pet_id, content
 
-## 20 Methods in Models
+## 20+ Methods in Models
 1. Pet#friends: return all pet's friends
 2. Pet#photos: return all pet's photos
 3. Pet#number_friends: return number of friends
@@ -24,12 +24,13 @@ Social media for pets
 12. Post#comments: return all comments for a post
 13. Post#number_comments: return number of comments on a post
 14. Post#likes: return number of likes on a post
-15. Post#who_liked: return list of users who liked a post
+15. Post#likers: return list of users who liked a post
 16. Post#who_commented: return list of users who commented on a post
 17. Pet#number_posts: return number of posts made by a pet
 18. Comment#likes: return number of likes for a comment
-19. Comment#who_liked: return list of users who liked a comment
+19. Comment#likers: return list of users who liked a comment
 20. Post.most_popular: return most popular post (comment number * like number)
+21. Pet#profile_photo
 
 ## 10 Specs
 A user can:

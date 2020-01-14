@@ -5,16 +5,33 @@ class Post < ApplicationRecord
   has_many :likes, as: :likeable
   has_many :likers, through: :likes, source: :pet
   has_many :comments
+  has_many :commenters, through: :comments, source: :pet
 
-  def like_count
-    likes.count
+  def number_likes
+    likes.size
   end
 
-  def comment_count
-    comments.count
+  def number_comments
+    comments.size
   end
 
   def score
-    like_count + comment_count
+    number_likes + number_comments
+  end
+
+  def self.most_popular
+    high_score_post = nil
+    high_score = 0
+
+    Post.includes(:likes, :comments).each do |p|
+      score = p.score
+
+      if score > high_score
+        high_score_post = p
+        high_score = score
+      end
+    end
+
+    high_score_post
   end
 end
